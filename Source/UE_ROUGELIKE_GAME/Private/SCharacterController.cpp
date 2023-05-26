@@ -49,11 +49,20 @@ void ASCharacterController::MoveRight(float value)
 	AddMovementInput(RightVector,value);
 }
 
+void ASCharacterController::PrimaryAttack()
+{
+	FVector HandleLoc = GetMesh()->GetSocketLocation("Muzzle_01");
+	FTransform SpawnTS = FTransform(GetControlRotation(),HandleLoc);
+	
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	GetWorld()->SpawnActor<AActor>(ProjectileClass,SpawnTS,SpawnParameters);
+}
+
 // Called every frame
 void ASCharacterController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -66,6 +75,7 @@ void ASCharacterController::SetupPlayerInputComponent(UInputComponent* PlayerInp
 	
 	InputComponent->BindAxis("Turn",this,&APawn::AddControllerYawInput);
 	InputComponent->BindAxis("Lookup",this,&APawn::AddControllerPitchInput);
-	
+
+	InputComponent->BindAction("PrimaryAttack",IE_Pressed,this,&ASCharacterController::PrimaryAttack);
 }
 

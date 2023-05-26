@@ -14,10 +14,13 @@ UCLASS()
 class UE_ROUGELIKE_GAME_API ASCharacterController : public ACharacter
 {
 	GENERATED_BODY()
-
+	
 public:
 	// Sets default values for this character's properties
 	ASCharacterController();
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> ProjectileClass;
 
 protected:
 	// Called when the game starts or when spawned
@@ -31,6 +34,7 @@ protected:
 
 	void MoveForward(float value);
 	void MoveRight(float value);
+	void PrimaryAttack();
 
 public:	
 	// Called every frame
