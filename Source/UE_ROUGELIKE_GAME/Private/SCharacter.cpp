@@ -17,6 +17,7 @@ ASCharacter::ASCharacter()
 	SpringArmComp->SetupAttachment(RootComponent);
 	CameraComp->SetupAttachment(SpringArmComp);
 
+	InteractionComp = CreateDefaultSubobject<USInteractionComponent>("InteractionComp");
 }
 
 // Called when the game starts or when spawned
@@ -44,7 +45,6 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	InputComponent->BindAxis("MoveForward",this,&ASCharacter::MoveForward);
-
 	InputComponent->BindAxis("Turn",this,&APawn::AddControllerYawInput);
 
 }

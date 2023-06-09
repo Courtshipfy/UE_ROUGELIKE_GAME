@@ -3,6 +3,8 @@
 
 #include "SCharacterController.h"
 
+#include "SAttributeComp.h"
+#include "SInteractionComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
@@ -23,6 +25,9 @@ ASCharacterController::ASCharacterController()
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
+	InteractionComp = CreateDefaultSubobject<USInteractionComponent>("InteractionComp");
+
+	AttributeComp = CreateDefaultSubobject<USAttributeComp>("AttributeComp");
 }
 
 // Called when the game starts or when spawned
@@ -30,6 +35,23 @@ void ASCharacterController::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void ASCharacterController::OnHealthChanged(AActor* InstigatorActor, USAttributeComp* Owningcomp, float NewHealth,
+	float Delta)
+{
+	if(NewHealth <= 0.0f && Delta < 0.0f)
+	{
+		APlayerController * pc = Cast<APlayerController>(GetController());
+		DisableInput(pc);
+	}
+}
+
+void ASCharacterController::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	AttributeComp->OnHealthChHangDelegated.AddDynamic(this,&ASCharacterController::OnHealthChanged);
 }
 
 void ASCharacterController::MoveForward(float value)
@@ -51,12 +73,49 @@ void ASCharacterController::MoveRight(float value)
 
 void ASCharacterController::PrimaryAttack()
 {
-	FVector HandleLoc = GetMesh()->GetSocketLocation("Muzzle_01");
-	FTransform SpawnTS = FTransform(GetControlRotation(),HandleLoc);
+	PlayAnimMontage(AttackAnim);
 	
-	FActorSpawnParameters SpawnParameters;
-	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	GetWorld()->SpawnActor<AActor>(ProjectileClass,SpawnTS,SpawnParameters);
+	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack,this,&ASCharacterController::PrimaryAttack_TimeElapsed,0.2f);
+
+	AttributeComp->ApplyChangeMagic(10.0f);
+}
+
+void ASCharacterController::PrimaryInteract()
+{
+	if(InteractionComp)
+	{
+		InteractionComp->PrimaryInteract();
+	}
+}
+
+void ASCharacterController::PrimaryAttack_TimeElapsed()
+{
+	if(ensure(ProjectileClass))
+	{
+		FVector HandleLoc = GetMesh()->GetSocketLocation("Muzzle_01");
+		FTransform SpawnTS = FTransform(GetControlRotation(),HandleLoc);
+	
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParameters.Instigator = this;
+		GetWorld()->SpawnActor<AActor>(ProjectileClass,SpawnTS,SpawnParameters);
+	}
+}
+
+void ASCharacterController::BlackHoleAttack()
+{
+	if(ensure(BlackHoleProjectileClass))
+	{
+		FVector HandleLoc = GetMesh()->GetSocketLocation("Muzzle_01");
+		FTransform SpawnTS = FTransform(GetControlRotation(),HandleLoc);
+	
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParameters.Instigator = this;
+		GetWorld()->SpawnActor<AActor>(BlackHoleProjectileClass,SpawnTS,SpawnParameters);
+	}
+
+	AttributeComp->ApplyChangeMagic(100.0f);
 }
 
 // Called every frame
@@ -77,5 +136,8 @@ void ASCharacterController::SetupPlayerInputComponent(UInputComponent* PlayerInp
 	InputComponent->BindAxis("Lookup",this,&APawn::AddControllerPitchInput);
 
 	InputComponent->BindAction("PrimaryAttack",IE_Pressed,this,&ASCharacterController::PrimaryAttack);
+	InputComponent->BindAction("PrimaryInteract",IE_Pressed,this,&ASCharacterController::PrimaryInteract);
+	InputComponent->BindAction("Jump",IE_Pressed,this,&ACharacter::Jump);
+	InputComponent->BindAction("SuperAttack",IE_Pressed,this,&ASCharacterController::BlackHoleAttack);
 }
 

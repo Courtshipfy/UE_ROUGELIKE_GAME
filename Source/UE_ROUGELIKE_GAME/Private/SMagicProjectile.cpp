@@ -2,7 +2,7 @@
 
 
 #include "SMagicProjectile.h"
-
+#include "SAttributeComp.h"
 #include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
@@ -13,7 +13,7 @@ ASMagicProjectile::ASMagicProjectile()
 
 	SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComp");
 	RootComponent = SphereComp;
-
+	SphereComp->OnComponentBeginOverlap.AddDynamic(this,&ASMagicProjectile::OnActorOverlap);
 	EffectComp = CreateDefaultSubobject<UParticleSystemComponent>("EffectComp");
 	EffectComp->SetupAttachment(SphereComp);
 
@@ -21,6 +21,7 @@ ASMagicProjectile::ASMagicProjectile()
 	MovementComp->InitialSpeed = 1000.0f;
 	MovementComp->bRotationFollowsVelocity = true;
 	MovementComp->bInitialVelocityInLocalSpace = true;
+	MovementComp->ProjectileGravityScale = 0.0f;
 
 	SphereComp->SetCollisionObjectType(ECC_WorldDynamic);
 	SphereComp->SetCollisionResponseToAllChannels(ECR_Ignore);
@@ -32,6 +33,17 @@ void ASMagicProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	USAttributeComp* SAttributeComp = Cast<USAttributeComp>(OtherActor->GetComponentByClass(USAttributeComp::StaticClass()));
+	if(SAttributeComp)
+	{
+		SAttributeComp->ApplyChangeHealth(-20.0f);
+		Destroy();
+	}
 }
 
 // Called every frame
