@@ -18,5 +18,7 @@ void ASAIController::BeginPlay()
 		FVector PawnLocation = FVector(MyPawn->GetActorLocation().X,MyPawn->GetActorLocation().Y,0);
 		
 		GetBlackboardComponent()->SetValueAsVector("MoveToLocation",PawnLocation);
+
+		GetBlackboardComponent()->SetValueAsObject("TargectActor",MyPawn);
 	}
 }
