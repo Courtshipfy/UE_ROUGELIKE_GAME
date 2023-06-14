@@ -24,7 +24,7 @@ void USBTService_AttackArange::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 				{
 					float DistanceTo = FVector::Distance(TargectActor->GetActorLocation(),MyPawn->GetActorLocation());
 
-					bool isWithinAttack = DistanceTo < 1000.f;
+					bool isWithinAttack = DistanceTo < 500.f;
 
 					bool bHasLos = false;
 					if(isWithinAttack)
