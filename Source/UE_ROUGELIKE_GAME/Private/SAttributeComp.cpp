@@ -10,14 +10,35 @@ USAttributeComp::USAttributeComp()
 	Magic = 300;
 }
 
-bool USAttributeComp::ApplyChangeHealth(float delta)
+USAttributeComp* USAttributeComp::GetAttributes(AActor* FromActor)
+{
+	if(FromActor)
+	{
+		return Cast<USAttributeComp>(FromActor->GetComponentByClass(USAttributeComp::StaticClass()));
+	}
+
+	return nullptr;
+}
+
+bool USAttributeComp::IsActorAlive(AActor* actor)
+{
+	USAttributeComp* AttributeComp = USAttributeComp::GetAttributes(actor);
+	if(AttributeComp)
+	{
+		return AttributeComp->IsAlive();
+	}
+
+	return false;
+}
+
+bool USAttributeComp::ApplyChangeHealth(AActor*Instigator,float delta)
 {
 	
 	Health += delta;
 	
 	if(Health < 0) Health = 0;
-
-	OnHealthChHangDelegated.Broadcast(NULL,nullptr,Health,delta);
+	
+	OnHealthChHangDelegated.Broadcast(Instigator,nullptr,Health,delta);
 	
 	return true;
 }

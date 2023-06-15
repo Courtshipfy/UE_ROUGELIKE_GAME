@@ -12,6 +12,8 @@
 ASGameModeBase::ASGameModeBase()
 {
 	SpawnTimerInterval = 2.0f;
+
+	MaxBotCount = 10.0f;
 }
 
 void ASGameModeBase::StartPlay()
@@ -45,23 +47,25 @@ void ASGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryIn
 	{
 		ASAICharacter* bot = *it;
 
-		USAttributeComp* AttributeComp = Cast<USAttributeComp>(bot->GetComponentByClass(USAttributeComp::StaticClass()));
+		USAttributeComp* AttributeComp = USAttributeComp::GetAttributes(bot);
 
 		if(ensure(AttributeComp) && AttributeComp->IsAlive())
 		{
 			NrOfAliveBots++;
 		}
 	}
-	float MaxBotCount = 10.0f;
 
+	UE_LOG(LogTemp,Log,TEXT("fOUND %i ALIVE BOTS"),NrOfAliveBots);
+
+	if(NrOfAliveBots >= 10.f)
+	{
+		UE_LOG(LogTemp,Log,TEXT("BOTS MAX,SKIP BOT SPAWN"));
+		return;
+	}
+	
 	if(DifficultyCurve)
 	{
 		MaxBotCount = DifficultyCurve->GetFloatValue(GetWorld()->TimeSeconds);
-	}
-
-	if(NrOfAliveBots >= MaxBotCount)
-	{
-		return;
 	}
 	
 	TArray<FVector> Locations = QueryInstance->GetResultsAsLocations();
@@ -69,6 +73,8 @@ void ASGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryIn
 	if(Locations.IsValidIndex(0))
 	{
 		GetWorld()->SpawnActor<AActor>(MinionClass,Locations[0],FRotator::ZeroRotator);
+
+		DrawDebugSphere(GetWorld(),Locations[0],50.0f,20,FColor::Blue,false,60.0f);
 	}
 }
 

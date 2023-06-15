@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Perception/PawnSensingComponent.h"
+#include "SAttributeComp.h"
 #include "SAICharacter.generated.h"
 
 UCLASS()
@@ -18,8 +19,20 @@ protected:
 	//UPROPERTY(VisibleAnywhere)
 	//UPawnSensingComponent* PawnSensingComp;
 
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite)
+	USAttributeComp* AttributeComp;
+
+	UPROPERTY(VisibleAnywhere)
+	FName TimeToHitParamName;
+	
 	UFUNCTION()
 	void OnPawnSensing(APawn* Pawn);
+
+	UFUNCTION()
+	void OnHealthChanged(AActor* InstigatorActor,USAttributeComp* OwningComp,float NewHealth,float Delta);
+
+	UFUNCTION()
+	void SetTargetActor(AActor* TargetActor);
 
 	virtual void PostInitializeComponents() override;
 

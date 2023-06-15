@@ -30,6 +30,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	UCurveFloat* DifficultyCurve;
 
+	UPROPERTY(EditDefaultsOnly)
+	float MaxBotCount;
+
 	UFUNCTION()
 	void SpawnBotTimerElapsed();
 

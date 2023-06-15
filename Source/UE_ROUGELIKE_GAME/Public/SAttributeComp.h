@@ -25,9 +25,15 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	float Magic;
+
+	UFUNCTION()
+	static USAttributeComp* GetAttributes(AActor* FromActor);
+
+	UFUNCTION()
+	static bool IsActorAlive(AActor* actor);
 	
 	UFUNCTION(BlueprintCallable)
-	bool ApplyChangeHealth(float delta);
+	bool ApplyChangeHealth(AActor*Instigator,float delta);
 
 	UFUNCTION(BlueprintCallable)
 	bool ApplyChangeMagic(float delta);

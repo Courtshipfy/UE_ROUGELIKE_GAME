@@ -3,6 +3,7 @@
 
 #include "SMagicProjectile.h"
 #include "SAttributeComp.h"
+#include "Components/AudioComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
@@ -26,6 +27,9 @@ ASMagicProjectile::ASMagicProjectile()
 	SphereComp->SetCollisionObjectType(ECC_WorldDynamic);
 	SphereComp->SetCollisionResponseToAllChannels(ECR_Ignore);
 	SphereComp->SetCollisionResponseToChannel(ECC_Pawn,ECR_Overlap);
+
+	AudioComp = CreateDefaultSubobject<UAudioComponent>("AudioComp");
+	AudioComp->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -41,7 +45,7 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 	USAttributeComp* SAttributeComp = Cast<USAttributeComp>(OtherActor->GetComponentByClass(USAttributeComp::StaticClass()));
 	if(SAttributeComp)
 	{
-		SAttributeComp->ApplyChangeHealth(-20.0f);
+		SAttributeComp->ApplyChangeHealth(GetInstigator(),-20.0f);
 		Destroy();
 	}
 }
