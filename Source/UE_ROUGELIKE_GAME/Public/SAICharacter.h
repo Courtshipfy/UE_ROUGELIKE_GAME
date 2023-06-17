@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Perception/PawnSensingComponent.h"
 #include "SAttributeComp.h"
+#include "SWorldUserWidget.h"
 #include "SAICharacter.generated.h"
 
 UCLASS()
@@ -19,6 +20,12 @@ protected:
 	//UPROPERTY(VisibleAnywhere)
 	//UPawnSensingComponent* PawnSensingComp;
 
+	UPROPERTY(EditDefaultsOnly)
+	USWorldUserWidget* ActiveHealthBar;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<USWorldUserWidget> HealthBarUserWidget;
+	
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite)
 	USAttributeComp* AttributeComp;
 

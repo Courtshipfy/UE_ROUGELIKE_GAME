@@ -7,6 +7,7 @@
 #include "InterchangeResult.h"
 #include "SAICharacter.h"
 #include "SAttributeComp.h"
+#include "SCharacterController.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 
 ASGameModeBase::ASGameModeBase()
@@ -21,6 +22,20 @@ void ASGameModeBase::StartPlay()
 	Super::StartPlay();
 
 	GetWorldTimerManager().SetTimer(TimerHandle_SpawnEnemies,this,&ASGameModeBase::SpawnBotTimerElapsed,SpawnTimerInterval,true);
+}
+
+void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* Killer)
+{
+	ASCharacterController* Player = Cast<ASCharacterController>(VictimActor);
+	if (Player)
+	{
+		
+		FTimerHandle TimerHandle_RespawnDelay;
+		FTimerDelegate Delegate;
+		Delegate.BindUFunction(this, "RespawnPlayerElapsed", Player->GetController());
+		float RespawnDelay = 2.0f;
+		GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, Delegate, RespawnDelay, false);
+	}
 }
 
 void ASGameModeBase::SpawnBotTimerElapsed()
@@ -75,6 +90,16 @@ void ASGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryIn
 		GetWorld()->SpawnActor<AActor>(MinionClass,Locations[0],FRotator::ZeroRotator);
 
 		DrawDebugSphere(GetWorld(),Locations[0],50.0f,20,FColor::Blue,false,60.0f);
+	}
+}
+
+void ASGameModeBase::RespawnPlayerElapsed(AController* Controller)
+{
+	if (ensure(Controller))
+	{
+		Controller->UnPossess();
+
+		RestartPlayer(Controller);
 	}
 }
 

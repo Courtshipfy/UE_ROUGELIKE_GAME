@@ -3,11 +3,16 @@
 
 #include "SAttributeComp.h"
 
+#include "SGameModeBase.h"
+
 // Sets default values for this component's properties
 USAttributeComp::USAttributeComp()
 {
-	Health = 100;
-	Magic = 300;
+	HealthMax = 100;
+	MagicMax = 300;
+
+	Health = HealthMax;
+	Magic = MagicMax;
 }
 
 USAttributeComp* USAttributeComp::GetAttributes(AActor* FromActor)
@@ -39,6 +44,16 @@ bool USAttributeComp::ApplyChangeHealth(AActor*Instigator,float delta)
 	if(Health < 0) Health = 0;
 	
 	OnHealthChHangDelegated.Broadcast(Instigator,nullptr,Health,delta);
+
+	//Died
+	if(Health <= 0.0f)
+	{
+		ASGameModeBase* ASGameModeBase = GetWorld()->GetAuthGameMode<class ASGameModeBase>();
+		if(ASGameModeBase)
+		{
+			ASGameModeBase->OnActorKilled(GetOwner(),Instigator);
+		}
+	}
 	
 	return true;
 }

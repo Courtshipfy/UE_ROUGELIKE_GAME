@@ -8,7 +8,7 @@ public class UE_ROUGELIKE_GAME : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore","GameplayTasks" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore","GameplayTasks","UMG" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

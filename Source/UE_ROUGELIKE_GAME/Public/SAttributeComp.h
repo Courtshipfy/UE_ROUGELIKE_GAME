@@ -25,8 +25,14 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	float Magic;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+    float HealthMax;
+    
+    UPROPERTY(EditAnywhere,BlueprintReadWrite)
+    float MagicMax;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	static USAttributeComp* GetAttributes(AActor* FromActor);
 
 	UFUNCTION()
