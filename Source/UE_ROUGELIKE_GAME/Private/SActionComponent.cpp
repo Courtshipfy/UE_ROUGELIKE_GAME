@@ -23,7 +23,6 @@ void USActionComponent::AddAction(AActor* Instigator, TSubclassOf<USAction> Acti
 	if (ensure(NewAction))
 	{
 		Actions.Add(NewAction);
-		
 	}
 }
 

@@ -7,6 +7,8 @@
 #include "GameFramework/Character.h"
 #include "Camera/CameraComponent.h"
 #include "SActionComponent.h"
+#include "AbilitySystemInterface.h"
+#include "SAbilitySystemComponent.h"
 #include "SCharacterController.generated.h"
 
 class UCameraComponent;
@@ -17,7 +19,7 @@ class USAttributeComp;
 class USActionComponent;
 
 UCLASS()
-class UE_ROUGELIKE_GAME_API ASCharacterController : public ACharacter
+class UE_ROUGELIKE_GAME_API ASCharacterController : public ACharacter,public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 	
@@ -55,6 +57,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite)
 	USActionComponent* ActionComp;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite)
+	USAbilitySystemComponent* AbilitySystemComp;
 	
 
 	UFUNCTION()
@@ -79,4 +84,5 @@ public:
 	
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 };

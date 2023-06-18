@@ -30,13 +30,16 @@ ASCharacterController::ASCharacterController()
 	InteractionComp = CreateDefaultSubobject<USInteractionComponent>("InteractionComp");
 
 	AttributeComp = CreateDefaultSubobject<USAttributeComp>("AttributeComp");
+
+	AbilitySystemComp = CreateDefaultSubobject<USAbilitySystemComponent>("AbilitySystemComp");
 }
 
 // Called when the game starts or when spawned
 void ASCharacterController::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	AbilitySystemComp->InitAbilityActorInfo(this,this);
 }
 
 void ASCharacterController::OnHealthChanged(AActor* InstigatorActor, USAttributeComp* Owningcomp, float NewHealth,
@@ -96,7 +99,7 @@ void ASCharacterController::PrimaryAttack_TimeElapsed()
 {
 	if(ensure(ProjectileClass))
 	{
-		FVector HandleLoc = GetMesh()->GetSocketLocation("Muzzle_01");
+		FVector HandleLoc = GetMesh()->GetSocketLocation("weaponProjectileSpawn");
 		FTransform SpawnTS = FTransform(GetControlRotation(),HandleLoc);
 	
 		FActorSpawnParameters SpawnParameters;
@@ -129,7 +132,7 @@ void ASCharacterController::SprintStart()
 
 void ASCharacterController::SprintStop()
 {
-	ActionComp->StartActionByName(this,"Sprint");
+	ActionComp->StopActionByName(this,"Sprint");
 }
 
 // Called every frame
@@ -162,5 +165,10 @@ void ASCharacterController::SetupPlayerInputComponent(UInputComponent* PlayerInp
 	InputComponent->BindAction("Sprint",IE_Pressed,this,&ASCharacterController::SprintStart);
 	InputComponent->BindAction("Sprint",IE_Released,this,&ASCharacterController::SprintStop);
 	
+}
+
+UAbilitySystemComponent* ASCharacterController::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComp;
 }
 
