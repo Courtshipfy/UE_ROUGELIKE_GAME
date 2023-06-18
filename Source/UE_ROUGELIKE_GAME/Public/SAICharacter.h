@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SActionComponent.h"
 #include "GameFramework/Character.h"
 #include "Perception/PawnSensingComponent.h"
 #include "SAttributeComp.h"

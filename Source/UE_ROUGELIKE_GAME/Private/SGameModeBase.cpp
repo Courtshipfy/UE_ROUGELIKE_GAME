@@ -10,6 +10,8 @@
 #include "SCharacterController.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 
+static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("su.SpawnBots"), true, TEXT("Enable spawning of bots via timer."), ECVF_Cheat);
+
 ASGameModeBase::ASGameModeBase()
 {
 	SpawnTimerInterval = 2.0f;
@@ -40,6 +42,12 @@ void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* Killer)
 
 void ASGameModeBase::SpawnBotTimerElapsed()
 {
+
+	if (!CVarSpawnBots.GetValueOnGameThread())
+	{
+		return;
+	}
+	
 	UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(this,SpawnBotQuery,this,EEnvQueryRunMode::RandomBest5Pct,nullptr);
 
 	if(QueryInstance)

@@ -7,6 +7,8 @@
 #include "BrainComponent.h"
 #include "SAttributeComp.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ASAICharacter::ASAICharacter()
@@ -17,7 +19,7 @@ ASAICharacter::ASAICharacter()
 
 	AttributeComp = CreateDefaultSubobject<USAttributeComp>("AttributeComp");
 	AttributeComp->OnHealthChHangDelegated.AddDynamic(this,&ASAICharacter::OnHealthChanged);
-
+	GetMesh()->SetGenerateOverlapEvents(true);
 	TimeToHitParamName = "TimeToHit";
 }
 
@@ -60,7 +62,8 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComp* Ow
 			//ragdoll
 			GetMesh()->SetAllBodiesSimulatePhysics(true);
 			GetMesh()->SetCollisionProfileName("Ragdoll");
-
+			GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			GetCharacterMovement()->DisableMovement();
 			//setlifespawn
 			SetLifeSpan(10.0f);
 		}

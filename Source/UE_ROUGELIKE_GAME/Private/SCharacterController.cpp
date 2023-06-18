@@ -23,6 +23,8 @@ ASCharacterController::ASCharacterController()
 	SpringArmComp->bUsePawnControlRotation = true;
 	bUseControllerRotationYaw = false;
 
+	ActionComp = CreateDefaultSubobject<USActionComponent>("ActionComp");
+	
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
 	InteractionComp = CreateDefaultSubobject<USInteractionComponent>("InteractionComp");
@@ -78,6 +80,8 @@ void ASCharacterController::PrimaryAttack()
 	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack,this,&ASCharacterController::PrimaryAttack_TimeElapsed,0.2f);
 
 	AttributeComp->ApplyChangeMagic(10.0f);
+
+	//ActionComp->StartActionByName(this,"PrimaryAttack");
 }
 
 void ASCharacterController::PrimaryInteract()
@@ -118,10 +122,25 @@ void ASCharacterController::BlackHoleAttack()
 	AttributeComp->ApplyChangeMagic(100.0f);
 }
 
+void ASCharacterController::SprintStart()
+{
+	ActionComp->StartActionByName(this,"Sprint");
+}
+
+void ASCharacterController::SprintStop()
+{
+	ActionComp->StartActionByName(this,"Sprint");
+}
+
 // Called every frame
 void ASCharacterController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+FVector ASCharacterController::GetPawnViewLocation() const
+{
+	return CameraComp->GetComponentLocation();
 }
 
 // Called to bind functionality to input
@@ -139,5 +158,9 @@ void ASCharacterController::SetupPlayerInputComponent(UInputComponent* PlayerInp
 	InputComponent->BindAction("PrimaryInteract",IE_Pressed,this,&ASCharacterController::PrimaryInteract);
 	InputComponent->BindAction("Jump",IE_Pressed,this,&ACharacter::Jump);
 	InputComponent->BindAction("SuperAttack",IE_Pressed,this,&ASCharacterController::BlackHoleAttack);
+
+	InputComponent->BindAction("Sprint",IE_Pressed,this,&ASCharacterController::SprintStart);
+	InputComponent->BindAction("Sprint",IE_Released,this,&ASCharacterController::SprintStop);
+	
 }
 

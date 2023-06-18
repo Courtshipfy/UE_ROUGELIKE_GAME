@@ -6,6 +6,7 @@
 #include "SAttributeComp.h"
 #include "GameFramework/Character.h"
 #include "Camera/CameraComponent.h"
+#include "SActionComponent.h"
 #include "SCharacterController.generated.h"
 
 class UCameraComponent;
@@ -13,6 +14,7 @@ class USpringArmComponent;
 class USInteractionComponent;
 class UAnimMontage;
 class USAttributeComp;
+class USActionComponent;
 
 UCLASS()
 class UE_ROUGELIKE_GAME_API ASCharacterController : public ACharacter
@@ -51,6 +53,10 @@ protected:
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite)
 	USAttributeComp* AttributeComp;
 
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite)
+	USActionComponent* ActionComp;
+	
+
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor,USAttributeComp* OwningComp,float NewHealth,float Delta);
 
@@ -62,12 +68,15 @@ protected:
 	void PrimaryInteract();
 	void PrimaryAttack_TimeElapsed();
 	void BlackHoleAttack();
+	void SprintStart();
+	void SprintStop();
 
 public:	
-	// Called every frame
+	
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
+	virtual FVector GetPawnViewLocation() const override;
+	
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 };
