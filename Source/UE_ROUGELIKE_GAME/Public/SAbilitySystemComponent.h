@@ -13,5 +13,11 @@ UCLASS(Blueprintable)
 class UE_ROUGELIKE_GAME_API USAbilitySystemComponent : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
+
+public:
+	
+	USAbilitySystemComponent();
+
+	//static USAbilitySystemComponent* GetAbilitySystemComponentFromActor(const AActor* Actor, bool LookForComponent = false);
 	
 };

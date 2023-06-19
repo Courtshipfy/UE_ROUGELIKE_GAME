@@ -22,8 +22,6 @@ ASCharacterController::ASCharacterController()
 
 	SpringArmComp->bUsePawnControlRotation = true;
 	bUseControllerRotationYaw = false;
-
-	ActionComp = CreateDefaultSubobject<USActionComponent>("ActionComp");
 	
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
@@ -39,6 +37,18 @@ void ASCharacterController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	check(AbilitySystemComp);
+
+	if(GameplayAbilities.Num())
+	{
+		for(int i = 0;i < GameplayAbilities.Num();i++)
+		{
+			if(GameplayAbilities[i] == nullptr) continue;
+			AbilitySystemComp->GiveAbility(FGameplayAbilitySpec(GameplayAbilities[i].GetDefaultObject(),1,0));
+			
+		}
+	}
+	
 	AbilitySystemComp->InitAbilityActorInfo(this,this);
 }
 
@@ -109,32 +119,6 @@ void ASCharacterController::PrimaryAttack_TimeElapsed()
 	}
 }
 
-void ASCharacterController::BlackHoleAttack()
-{
-	if(ensure(BlackHoleProjectileClass))
-	{
-		FVector HandleLoc = GetMesh()->GetSocketLocation("Muzzle_01");
-		FTransform SpawnTS = FTransform(GetControlRotation(),HandleLoc);
-	
-		FActorSpawnParameters SpawnParameters;
-		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		SpawnParameters.Instigator = this;
-		GetWorld()->SpawnActor<AActor>(BlackHoleProjectileClass,SpawnTS,SpawnParameters);
-	}
-
-	AttributeComp->ApplyChangeMagic(100.0f);
-}
-
-void ASCharacterController::SprintStart()
-{
-	ActionComp->StartActionByName(this,"Sprint");
-}
-
-void ASCharacterController::SprintStop()
-{
-	ActionComp->StopActionByName(this,"Sprint");
-}
-
 // Called every frame
 void ASCharacterController::Tick(float DeltaTime)
 {
@@ -160,10 +144,6 @@ void ASCharacterController::SetupPlayerInputComponent(UInputComponent* PlayerInp
 	InputComponent->BindAction("PrimaryAttack",IE_Pressed,this,&ASCharacterController::PrimaryAttack);
 	InputComponent->BindAction("PrimaryInteract",IE_Pressed,this,&ASCharacterController::PrimaryInteract);
 	InputComponent->BindAction("Jump",IE_Pressed,this,&ACharacter::Jump);
-	InputComponent->BindAction("SuperAttack",IE_Pressed,this,&ASCharacterController::BlackHoleAttack);
-
-	InputComponent->BindAction("Sprint",IE_Pressed,this,&ASCharacterController::SprintStart);
-	InputComponent->BindAction("Sprint",IE_Released,this,&ASCharacterController::SprintStop);
 	
 }
 

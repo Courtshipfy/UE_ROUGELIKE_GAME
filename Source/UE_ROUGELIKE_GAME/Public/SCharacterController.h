@@ -56,10 +56,13 @@ protected:
 	USAttributeComp* AttributeComp;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite)
-	USActionComponent* ActionComp;
-
-	UPROPERTY(VisibleAnywhere,BlueprintReadWrite)
 	USAbilitySystemComponent* AbilitySystemComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Abilities)
+	TArray<TSubclassOf<UGameplayAbility>> GameplayAbilities;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Abilities)
+	TArray<TSubclassOf<UGameplayEffect>> GameplayEffects;
 	
 
 	UFUNCTION()
@@ -72,9 +75,6 @@ protected:
 	void PrimaryAttack();
 	void PrimaryInteract();
 	void PrimaryAttack_TimeElapsed();
-	void BlackHoleAttack();
-	void SprintStart();
-	void SprintStop();
 
 public:	
 	
