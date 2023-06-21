@@ -1,7 +1,7 @@
 # UE_ROUGELIKE_GAME
 An UE game project for learning,rougelike type
 
-![preview image](https://github.com/Courtshipfy/UE_ROUGELIKE_GAME/commit/1c365f10a6b378eb00bb68e9733ad890b7bbf4d7)
+![preview image](https://github.com/Courtshipfy/UE_ROUGELIKE_GAME/blob/master/Content/Screenshot%202023-06-21%20104158.png)
 
 + Basic features (Camera bindings,Animation bindings...)
 + GAS based skill system
