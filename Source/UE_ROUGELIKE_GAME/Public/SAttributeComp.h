@@ -47,6 +47,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsAlive();
 
+	UFUNCTION(Exec)
+	void KillSelf();
+
 	UPROPERTY(BlueprintAssignable)
 	FOnHealthChnaged OnHealthChHangDelegated;
 

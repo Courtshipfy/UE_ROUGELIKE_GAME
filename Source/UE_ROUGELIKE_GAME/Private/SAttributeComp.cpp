@@ -74,5 +74,10 @@ bool USAttributeComp::IsAlive()
 	return Health > 0.0f;
 }
 
+void USAttributeComp::KillSelf()
+{
+	ApplyChangeHealth(GetOwner(),-100.0f);
+}
+
 
 
