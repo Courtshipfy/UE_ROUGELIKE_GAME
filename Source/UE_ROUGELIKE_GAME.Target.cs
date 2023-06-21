@@ -10,6 +10,6 @@ public class UE_ROUGELIKE_GAMETarget : TargetRules
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_1;
-		ExtraModuleNames.Add("UE_ROUGELIKE_GAME");
+		ExtraModuleNames.Add("RPGUE5");
 	}
 }

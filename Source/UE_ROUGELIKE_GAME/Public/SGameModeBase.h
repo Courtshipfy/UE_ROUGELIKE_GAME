@@ -42,7 +42,6 @@ protected:
 	UFUNCTION()
 	void RespawnPlayerElapsed(AController* Controller);
 
-	
 public:
 
 	ASGameModeBase();

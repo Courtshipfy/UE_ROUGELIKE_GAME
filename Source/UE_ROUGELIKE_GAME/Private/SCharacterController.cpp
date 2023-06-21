@@ -39,17 +39,16 @@ void ASCharacterController::BeginPlay()
 
 	check(AbilitySystemComp);
 
+	AbilitySystemComp->InitAbilityActorInfo(this,this);
+		
 	if(GameplayAbilities.Num())
 	{
 		for(int i = 0;i < GameplayAbilities.Num();i++)
 		{
 			if(GameplayAbilities[i] == nullptr) continue;
 			AbilitySystemComp->GiveAbility(FGameplayAbilitySpec(GameplayAbilities[i].GetDefaultObject(),1,0));
-			
 		}
 	}
-	
-	AbilitySystemComp->InitAbilityActorInfo(this,this);
 }
 
 void ASCharacterController::OnHealthChanged(AActor* InstigatorActor, USAttributeComp* Owningcomp, float NewHealth,
